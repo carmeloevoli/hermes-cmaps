@@ -1,12 +1,12 @@
 cmake_minimum_required (VERSION 3.1)
 project(hermes C CXX)
 
-set( CMAKE_VERBOSE_MAKEFILE off )
+set( CMAKE_VERBOSE_MAKEFILE on )
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
 set( CMAKE_C_COMPILER "/usr/local/Cellar/gcc/9.3.0_1/bin/gcc-9" )
-#set( CMAKE_C_FLAGS "-O3" )
+set( CMAKE_C_FLAGS "-O3" )
 set( CMAKE_CXX_COMPILER "/usr/local/Cellar/gcc/9.3.0_1/bin/g++-9" )
-#set( CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++11 -fopenmp -DOPENMP -DTHREADS=4" )
+set( CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++11 -fopenmp -DOPENMP -DTHREADS=4" )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_BUILD_TYPE Debug)
