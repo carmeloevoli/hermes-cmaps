@@ -120,5 +120,8 @@ target_link_libraries(radiospectra ${HERMES_EXTRA_LIBRARIES})
 add_executable(gammamaps src/gammamaps.cpp)
 target_link_libraries(gammamaps ${HERMES_EXTRA_LIBRARIES})
 
-add_executable(gammaspectra src/gammaspectra.cpp)
-target_link_libraries(gammaspectra ${HERMES_EXTRA_LIBRARIES})
+add_executable(gammaspectra-LE src/gammaspectra_LE.cpp)
+target_link_libraries(gammaspectra-LE ${HERMES_EXTRA_LIBRARIES})
+
+add_executable(gammaspectra-HE src/gammaspectra_HE.cpp)
+target_link_libraries(gammaspectra-HE ${HERMES_EXTRA_LIBRARIES})
