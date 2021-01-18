@@ -1,169 +1,188 @@
-// void computePionDecayHESpectrum(int nside, neutralgas::GasType gasType, std::string filename) {
-//     // cosmic ray density models
-//     std::vector<PID> particletypes = {Proton, Helium};
-//     auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
+// Copyright HERMES Team 2021
+#include <array>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <vector>
 
-//     // interaction
-//     auto crosssection = std::make_shared<interactions::KelnerAharonianGamma>();
+#include "hermes.h"
 
-//     // target gas
-//     auto gas = std::make_shared<neutralgas::RingModel>(gasType);
+namespace hermes {
 
-//     // integrator
-//     auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, crosssection);
-//     auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-//     intPion->setSunPosition(sun_pos);
-//     intPion->setupCacheTable(100, 100, 50);
+const std::string dragonFile = "./data/DRAGON_Fornieri2020.fits.gz";
 
-//     // skymap
-//     auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 1_PeV, 3 * 8);
-//     skymaps->setIntegrator(intPion);
+void computePionDecayHESpectrum(int nside, neutralgas::GasType gasType, std::string filename) {
+  // cosmic ray density models
+  std::vector<PID> particletypes = {Proton, Helium};
+  auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
 
-//     auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+  // interaction
+  auto crosssection = std::make_shared<interactions::KelnerAharonianGamma>();
 
-//     skymaps->compute();
-//     skymaps->save(output);
-// }
+  // target gas
+  auto gas = std::make_shared<neutralgas::RingModel>(gasType);
 
-// void computePionDecayNeutrinoSpectrum(int nside, neutralgas::GasType gasType,
-//                                       std::string filename) {
-//     // cosmic ray density models
-//     std::vector<PID> particletypes = {Proton, Helium};
-//     auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
+  // integrator
+  auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, crosssection);
+  auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
+  intPion->setSunPosition(sun_pos);
+  intPion->setupCacheTable(100, 100, 50);
 
-//     // interaction
-//     auto crosssection = std::make_shared<interactions::KelnerAharonianNeutrino>();
+  // skymap
+  auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 1_PeV, 3 * 8);
+  skymaps->setIntegrator(intPion);
 
-//     // target gas
-//     auto gas = std::make_shared<neutralgas::RingModel>(gasType);
+  auto output = std::make_shared<outputs::HEALPixFormat>(filename);
 
-//     // integrator
-//     auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, crosssection);
-//     auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-//     intPion->setSunPosition(sun_pos);
-//     intPion->setupCacheTable(100, 100, 50);
+  skymaps->compute();
+  skymaps->save(output);
+}
 
-//     // skymap
-//     auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 1_PeV, 3 * 8);
-//     skymaps->setIntegrator(intPion);
+void computePionDecayNeutrinoSpectrum(int nside, neutralgas::GasType gasType, std::string filename) {
+  // cosmic ray density models
+  std::vector<PID> particletypes = {Proton, Helium};
+  auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
 
-//     auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+  // interaction
+  auto crosssection = std::make_shared<interactions::KelnerAharonianNeutrino>();
 
-//     skymaps->compute();
-//     skymaps->save(output);
-// }
+  // target gas
+  auto gas = std::make_shared<neutralgas::RingModel>(gasType);
 
-// void computeDarkMatterSpectrum(int nside, std::string filename) {
-//     // photon field
-//     auto gamma_slope = 1.0;
-//     auto concentration = 20;
-//     auto M_200 = 1.4 * 0.7 * 8e11 * units::sun_mass;  // check
+  // integrator
+  auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, crosssection);
+  auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
+  intPion->setSunPosition(sun_pos);
+  intPion->setupCacheTable(100, 100, 50);
 
-//     auto dmProfile = std::make_shared<darkmatter::NFWGProfile>(gamma_slope, concentration,
-//     M_200);
+  // skymap
+  auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 1_PeV, 3 * 8);
+  skymaps->setIntegrator(intPion);
 
-//     //    auto units = 1.6726219e-27_kg / 0.938 / (1_cm * 1_cm * 1_cm);
-//     //    std::cout << dmProfile->getMassDensity(8.5_kpc) / units << "\n";
+  auto output = std::make_shared<outputs::HEALPixFormat>(filename);
 
-//     darkmatter::Channel dmChannel = darkmatter::Channel::W;
-//     darkmatter::Mass dmMass = darkmatter::Mass::m30TeV;
+  skymaps->compute();
+  skymaps->save(output);
+}
 
-//     auto dmSpectrum = std::make_shared<darkmatter::PPPC4DMIDSpectrum>(dmChannel, dmMass);
+void computeDarkMatterSpectrum(int nside, std::string filename) {
+  // photon field
+  auto gamma_slope = 1.0;
+  auto concentration = 20;
+  auto M_200 = 1.4 * 0.7 * 8e11 * units::sun_mass;  // check
 
-//     // integrator
-//     auto intDM = std::make_shared<DarkMatterIntegrator>(dmSpectrum, dmProfile);
-//     auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-//     intDM->setSunPosition(sun_pos);
+  auto dmProfile = std::make_shared<darkmatter::NFWGProfile>(gamma_slope, concentration, M_200);
 
-//     // skymap
-//     auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 30_TeV, 50);
+  darkmatter::Channel dmChannel = darkmatter::Channel::W;
+  darkmatter::Mass dmMass = darkmatter::Mass::m30TeV;
 
-//     skymaps->setIntegrator(intDM);
+  auto dmSpectrum = std::make_shared<darkmatter::PPPC4DMIDSpectrum>(dmChannel, dmMass);
 
-//     auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+  // integrator
+  auto intDM = std::make_shared<DarkMatterIntegrator>(dmSpectrum, dmProfile);
+  auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
+  intDM->setSunPosition(sun_pos);
 
-//     skymaps->compute();
-//     skymaps->save(output);
-// }
+  // skymap
+  auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 30_TeV, 50);
 
-// // void computePionDecayAbsorptionSpectrum(int nside, neutralgas::GasType gasType,
-// //                                         std::string filename) {
-// //     // cosmic ray density models
-// //     std::vector<PID> particletypes = {Proton, Helium};
-// //     auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
+  skymaps->setIntegrator(intDM);
 
-// //     // photon background
-// //     auto isrf = std::make_shared<photonfields::ISRF>(photonfields::ISRF());
+  auto output = std::make_shared<outputs::HEALPixFormat>(filename);
 
-// //     // interaction
-// //     auto crosssection = std::make_shared<interactions::KelnerAharonianGamma>();
+  skymaps->compute();
+  skymaps->save(output);
+}
 
-// //     // target gas
-// //     auto gas = std::make_shared<neutralgas::RingModel>(gasType);
+void computeDarkMatterSecondarySpectrum(int nside, std::string filename) {
+  // photon field
+  auto isrf = std::make_shared<photonfields::ISRF>(photonfields::ISRF());
 
-// //     // mask
-// //     const std::array<QAngle, 2> longitude{0_deg, 360_deg};
-// //     const std::array<QAngle, 2> latitude{-8_deg, 8_deg};
-// //     auto mask = std::make_shared<RectangularWindow>(latitude, longitude);
+  // cosmic ray density models
+  std::vector<PID> particletypes = {Electron, Positron};
 
-// //     // integrator
-// //     auto intPion =
-// //         std::make_shared<PiZeroAbsorptionIntegrator>(dragonModel, gas, isrf, crosssection);
-// //     auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-// //     intPion->setSunPosition(sun_pos);
-// //     intPion->setupCacheTable(100, 100, 50);
+  auto datapath = "./data/run_2D_DM_30000.fits.gz";
+  auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(datapath, particletypes);
 
-// //     // skymap
-// //     auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 1_PeV, 3 * 4);
-// //     skymaps->setMask(mask);
-// //     skymaps->setIntegrator(intPion);
+  // interaction
+  auto kleinnishina = std::make_shared<interactions::KleinNishina>();
 
-// //     auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+  // integrator
+  auto intIC = std::make_shared<InverseComptonIntegrator>(dragonModel, isrf, kleinnishina);
+  auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
+  intIC->setSunPosition(sun_pos);
+  intIC->setupCacheTable(40, 40, 20);
 
-// //     skymaps->compute();
-// //     skymaps->save(output);
-// // }
+  // skymap
+  auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 30_TeV, 30);
 
-//     // HE PLOT
-//     // hermes::computePionDecayHESpectrum(64, GasType::HI,
-//     //                                    "!spectrum-PionDecay-HI-1TeV-1PeV-64.fits.gz");
-//     // hermes::computePionDecayHESpectrum(64, GasType::H2,
-//     //                                    "!spectrum-PionDecay-H2-1TeV-1PeV-64.fits.gz");
-//     // hermes::computePionDecayNeutrinoSpectrum(64, GasType::HI,
-//     //                                          "!spectrum-PionDecayNu-HI-1TeV-1PeV-64.fits.gz");
-//     // hermes::computePionDecayNeutrinoSpectrum(64, GasType::H2,
-//     //                                          "!spectrum-PionDecayNu-H2-1TeV-1PeV-64.fits.gz");
-//     // hermes::computeDarkMatterSpectrum(64, "!spectrum-DarkMatter-1TeV-30TeV-64.fits.gz");
+  skymaps->setIntegrator(intIC);
 
-//     // hermes::computePionDecayAbsorptionSpectrum(16, GasType::HI,
-//     // "!spectrum-PionDecayAbsorption-HI-1TeV-1PeV-16.fits.gz");
+  auto output = std::make_shared<outputs::HEALPixFormat>(filename);
 
-// void computePionDecayAbsorptionMap(int nside, double E_gamma, neutralgas::GasType gasType, std::string filename) {
-//   // cosmic ray density models
-//   std::vector<PID> particletypes = {Proton, Helium};
-//   auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
+  skymaps->compute();
+  skymaps->save(output);
+}
 
-//   // photon background
-//   auto isrf = std::make_shared<photonfields::ISRF>(photonfields::ISRF());
+void computePionDecayAbsorptionSpectrum(int nside, neutralgas::GasType gasType, std::string filename,
+                                        bool doAbsorption) {
+  // cosmic ray density models
+  std::vector<PID> particletypes = {Proton, Helium};
+  const auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
 
-//   // interaction
-//   auto kamae_crosssection = std::make_shared<interactions::Kamae06Gamma>();
+  // photon background
+  const auto isrf = std::make_shared<photonfields::ISRF>(photonfields::ISRF());
 
-//   // target gas
-//   auto gas = std::make_shared<neutralgas::RingModel>(gasType);
+  // interaction
+  const auto crosssection = std::make_shared<interactions::KelnerAharonianGamma>();
 
-//   // integrator
-//   auto intPion = std::make_shared<PiZeroAbsorptionIntegrator>(dragonModel, gas, isrf, kamae_crosssection);
-//   auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-//   intPion->setSunPosition(sun_pos);
-//   intPion->setupCacheTable(200, 200, 100);
+  // target gas
+  const auto gas = std::make_shared<neutralgas::RingModel>(gasType);
 
-//   // skymap
-//   auto skymaps = std::make_shared<GammaSkymap>(nside, E_gamma * 1_GeV);
-//   skymaps->setIntegrator(intPion);
+  // mask
+  const std::array<QAngle, 2> longitude{0_deg, 360_deg};
+  const std::array<QAngle, 2> latitude{-8_deg, 8_deg};
+  const auto mask = std::make_shared<RectangularWindow>(latitude, longitude);
 
-//   auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+  // integrator
+  std::shared_ptr<hermes::GammaIntegratorTemplate> intPion;
+  if (doAbsorption)
+    intPion = std::make_shared<PiZeroAbsorptionIntegrator>(dragonModel, gas, isrf, crosssection);
+  else
+    intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, crosssection);
 
-//   skymaps->compute();
-//   skymaps->save(output);
-// }
+  auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
+  intPion->setSunPosition(sun_pos);
+  intPion->setupCacheTable(100, 100, 50);
+
+  // skymap
+  auto skymaps = std::make_shared<GammaSkymapRange>(nside, 1_TeV, 1_PeV, 3 * 8);
+  skymaps->setMask(mask);
+  skymaps->setIntegrator(intPion);
+
+  auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+
+  skymaps->compute();
+  skymaps->save(output);
+}
+
+}  // namespace hermes
+
+using GasType = hermes::neutralgas::GasType;
+
+int main() {
+  // hermes::computePionDecayHESpectrum(64, GasType::HI, "!spectrum-PionDecay-HI-1TeV-1PeV-64.fits.gz");
+  // hermes::computePionDecayHESpectrum(64, GasType::H2, "!spectrum-PionDecay-H2-1TeV-1PeV-64.fits.gz");
+  // hermes::computePionDecayNeutrinoSpectrum(64, GasType::HI, "!spectrum-PionDecayNu-HI-1TeV-1PeV-64.fits.gz");
+  // hermes::computePionDecayNeutrinoSpectrum(64, GasType::H2, "!spectrum-PionDecayNu-H2-1TeV-1PeV-64.fits.gz");
+  // hermes::computeDarkMatterSpectrum(256, "!spectrum-DarkMatter-1TeV-30TeV-256.fits.gz");
+  // hermes::computeDarkMatterSecondarySpectrum(64, "!spectrum-DarkMatterSecondary-1TeV-30TeV-64.fits.gz");
+  // hermes::computePionDecayAbsorptionSpectrum(16, GasType::HI,
+  // "!spectrum-PionDecayAbsorption-HI-1TeV-1PeV-16.fits.gz",
+  //                                          true);
+  // hermes::computePionDecayAbsorptionSpectrum(16, GasType::HI, "!spectrum-PionDecay-HI-1TeV-1PeV-16.fits.gz", false);
+
+  hermes::computePionDecayAbsorptionSpectrum(16, GasType::H2, "!spectrum-PionDecayAbsorption-H2-1TeV-1PeV-16.fits.gz",
+                                             true);
+  hermes::computePionDecayAbsorptionSpectrum(16, GasType::H2, "!spectrum-PionDecay-H2-1TeV-1PeV-16.fits.gz", false);
+}
