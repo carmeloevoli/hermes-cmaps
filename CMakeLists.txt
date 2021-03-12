@@ -3,10 +3,10 @@ project(hermes C CXX)
 
 set( CMAKE_VERBOSE_MAKEFILE on )
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
-set( CMAKE_C_COMPILER "/usr/local/Cellar/gcc/9.3.0_1/bin/gcc-9" )
+set( CMAKE_C_COMPILER "/usr/local/bin/gcc-10" )
 set( CMAKE_C_FLAGS "-O3" )
-set( CMAKE_CXX_COMPILER "/usr/local/Cellar/gcc/9.3.0_1/bin/g++-9" )
-set( CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++11 -fopenmp -DOPENMP -DTHREADS=4" )
+set( CMAKE_CXX_COMPILER "/usr/local/bin/g++-10" )
+set( CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++11 -fopenmp -DOPENMP -DTHREADS=16" )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_BUILD_TYPE Debug)
@@ -67,17 +67,6 @@ if(GSL_FOUND)
 	list(APPEND HERMES_EXTRA_LIBRARIES ${GSL_LIBRARIES})
 endif(GSL_FOUND)
 
-# OpenMP (optional for shared memory multiprocessing)
-#option(ENABLE_OPENMP "OpenMP for multithreading" ON)
-#if(ENABLE_OPENMP)
-#find_package(OpenMP)
-#        if(OPENMP_FOUND)
-#                set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-#                set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-#                set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
-#        endif(OPENMP_FOUND)
-#endif(ENABLE_OPENMP)
-
 # FFTW3F (optional for turbulent magnetic fields)
 find_package(FFTW3F)
 if(FFTW3F_FOUND)
@@ -105,6 +94,10 @@ if(HERMES_FOUND)
         list(APPEND HERMES_EXTRA_INCLUDES ${HERMES_INCLUDE_DIR})
         list(APPEND HERMES_EXTRA_LIBRARIES ${HERMES_LIBRARIES})
 endif(HERMES_FOUND)
+
+# copy data files in build
+file(GLOB HERMES_DATA "data/*fits*")
+file(COPY ${HERMES_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
 
 # ----------------------------------------------------------------------------
 # Playground
