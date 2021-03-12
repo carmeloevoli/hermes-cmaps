@@ -95,6 +95,10 @@ if(HERMES_FOUND)
         list(APPEND HERMES_EXTRA_LIBRARIES ${HERMES_LIBRARIES})
 endif(HERMES_FOUND)
 
+# copy data files in build
+file(GLOB HERMES_DATA "data/*fits*")
+file(COPY ${HERMES_DATA} DESTINATION ${PROJECT_BINARY_DIR}/data)
+
 # ----------------------------------------------------------------------------
 # Playground
 # ----------------------------------------------------------------------------
