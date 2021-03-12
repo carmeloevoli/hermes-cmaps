@@ -37,6 +37,35 @@ void computePionDecayMap(int nside, double E_gamma, neutralgas::GasType gasType,
   skymaps->save(output);
 }
 
+void computePionDecayCMZMap(int nside, double E_gamma, neutralgas::GasType gasType, std::string filename) {
+  // cosmic ray density models
+  std::vector<PID> particletypes = {Proton, Helium};
+  auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
+
+  // interaction
+  auto kamae_crosssection = std::make_shared<interactions::Kamae06Gamma>();
+
+  // target gas
+  auto gas = std::make_shared<neutralgas::RingModel>(gasType);
+  for (size_t i = 2; i < 12; ++i)
+     gas->disableRingNo(i);
+
+  // integrator
+  auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, kamae_crosssection);
+  auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
+  intPion->setSunPosition(sun_pos);
+  intPion->setupCacheTable(200, 200, 100);
+
+  // skymap
+  auto skymaps = std::make_shared<GammaSkymap>(nside, E_gamma * 1_GeV);
+  skymaps->setIntegrator(intPion);
+
+  auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+
+  skymaps->compute();
+  skymaps->save(output);
+}
+
 void computeInverseComptonMap(int nside, double E_gamma, std::string filename) {
   // photon field
   auto isrf = std::make_shared<photonfields::ISRF>(photonfields::ISRF());
@@ -69,8 +98,9 @@ void computeInverseComptonMap(int nside, double E_gamma, std::string filename) {
 using GasType = hermes::neutralgas::GasType;
 
 int main(void) {
-  hermes::computePionDecayMap(128, 10, GasType::HI, "!map-Pi0-HI-10GeV-128.fits.gz");
-  hermes::computePionDecayMap(128, 10, GasType::H2, "!map-Pi0-H2-10GeV-128.fits.gz");
-  hermes::computeInverseComptonMap(128, 10, "!map-IC-10GeV-128.fits.gz");
+//  hermes::computePionDecayMap(256, 10, GasType::HI, "!map-Pi0-HI-10GeV-256.fits.gz");
+  hermes::computePionDecayMap(256, 10, GasType::H2, "!map-Pi0-H2-10GeV-256.fits.gz");
+  hermes::computePionDecayCMZMap(512, 10, GasType::H2, "!map-cmz-Pi0-H2-10GeV-512.fits.gz");
+    //  hermes::computeInverseComptonMap(128, 10, "!map-IC-10GeV-128.fits.gz");
   return 0;
 }
