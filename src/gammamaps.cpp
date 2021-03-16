@@ -37,7 +37,7 @@ void computePionDecayMap(int nside, double E_gamma, neutralgas::GasType gasType,
   skymaps->save(output);
 }
 
-void computePionDecayCMZMap(int nside, double E_gamma, neutralgas::GasType gasType, std::string filename) {
+void computePionDecayRingMap(int iring, int nside, double E_gamma, neutralgas::GasType gasType, std::string filename) {
   // cosmic ray density models
   std::vector<PID> particletypes = {Proton, Helium};
   auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
@@ -47,8 +47,8 @@ void computePionDecayCMZMap(int nside, double E_gamma, neutralgas::GasType gasTy
 
   // target gas
   auto gas = std::make_shared<neutralgas::RingModel>(gasType);
-  for (size_t i = 2; i < 12; ++i)
-     gas->disableRingNo(i);
+  for (size_t i = 0; i < 12; ++i)
+     if (i != iring) gas->disableRingNo(i);
 
   // integrator
   auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, kamae_crosssection);
@@ -98,9 +98,14 @@ void computeInverseComptonMap(int nside, double E_gamma, std::string filename) {
 using GasType = hermes::neutralgas::GasType;
 
 int main(void) {
-//  hermes::computePionDecayMap(256, 10, GasType::HI, "!map-Pi0-HI-10GeV-256.fits.gz");
-  hermes::computePionDecayMap(256, 10, GasType::H2, "!map-Pi0-H2-10GeV-256.fits.gz");
-  hermes::computePionDecayCMZMap(512, 10, GasType::H2, "!map-cmz-Pi0-H2-10GeV-512.fits.gz");
-    //  hermes::computeInverseComptonMap(128, 10, "!map-IC-10GeV-128.fits.gz");
+  //hermes::computePionDecayMap(256, 10, GasType::HI, "!map-Pi0-HI-10GeV-256.fits.gz");
+  //hermes::computePionDecayMap(256, 10, GasType::H2, "!map-Pi0-H2-10GeV-256.fits.gz");
+  //hermes::computeInverseComptonMap(128, 10, "!map-IC-10GeV-128.fits.gz");
+  
+  for (int i = 0; i < 12; i++) {
+     hermes::computePionDecayRingMap(i, 128, 10, GasType::H2, "!map-ring-Pi0-H2-10GeV-128-" + std::to_string(i) + ".fits.gz");
+     hermes::computePionDecayRingMap(i, 128, 10, GasType::HI, "!map-ring-Pi0-HI-10GeV-128-" + std::to_string(i) + ".fits.gz");
+  }
+    
   return 0;
 }
