@@ -102,9 +102,9 @@ int main(void) {
   //hermes::computePionDecayMap(256, 10, GasType::H2, "!map-Pi0-H2-10GeV-256.fits.gz");
   //hermes::computeInverseComptonMap(128, 10, "!map-IC-10GeV-128.fits.gz");
   
-  for (int i = 0; i < 12; i++) {
-     hermes::computePionDecayRingMap(i, 128, 10, GasType::H2, "!map-ring-Pi0-H2-10GeV-128-" + std::to_string(i) + ".fits.gz");
-     hermes::computePionDecayRingMap(i, 128, 10, GasType::HI, "!map-ring-Pi0-HI-10GeV-128-" + std::to_string(i) + ".fits.gz");
+  for (int i = 0; i < 11; i++) {
+     hermes::computePionDecayRingMap(i, 256, 5, GasType::H2, "!map-ring-Pi0-H2-5GeV-256-" + std::to_string(i) + ".fits.gz");
+     hermes::computePionDecayRingMap(i, 256, 5, GasType::HI, "!map-ring-Pi0-HI-5GeV-256-" + std::to_string(i) + ".fits.gz");
   }
     
   return 0;

@@ -10,7 +10,7 @@ namespace hermes {
 
 void computeDMmap(int nside, std::string filename) {
   // ionized gas
-  auto gas = std::make_shared<chargedgas::YMW16>();
+  auto gas = std::make_shared<ionizedgas::YMW16>();
 
   // integrator
   auto integrator = std::make_shared<DispersionMeasureIntegrator>(gas);
@@ -27,12 +27,12 @@ void computeDMmap(int nside, std::string filename) {
   skymaps->save(output);
 }
 
-void computeRMmap(int nside, std::string filename, bool doTurbolent = true) {
+void computeRMmap(int nside, bool doTurb, std::string filename) {
   // ionized gas
-  auto gas = std::make_shared<chargedgas::NE2001Simple>();
+  auto gas = std::make_shared<ionizedgas::NE2001Simple>();
 
   auto mfield = std::make_shared<magneticfields::JF12>();
-  if (doTurbolent) {
+  if (doTurb) {
     mfield->randomTurbulent(1);
     mfield->randomStriated(1);
   }
@@ -51,13 +51,12 @@ void computeRMmap(int nside, std::string filename, bool doTurbolent = true) {
   skymaps->save(output);
 }
 
-void computeSynchroMap(int nside, double freq, std::string filename, bool doTurbolent = true) {
+void computeSynchroMap(int nside, double freq, std::string filename) {
   // magnetic field
   auto mfield = std::make_shared<magneticfields::JF12>();
-  if (doTurbolent) {
   mfield->randomTurbulent(1);
   mfield->randomStriated(1);
-  }
+
   // cosmic ray density models
   std::vector<PID> particletypes = {Electron, Positron};
   auto datapath = "./data/DRAGON_Fornieri2020.fits.gz";
@@ -80,13 +79,10 @@ void computeSynchroMap(int nside, double freq, std::string filename, bool doTurb
 }  // namespace hermes
 
 int main() {
-//  hermes::computeDMmap(128, "!map-DM-128.fits.gz");
-//  hermes::computeRMmap(128, "!map-RM-128.fits.gz", true);
-//  hermes::computeRMmap(128, "!map-RM-noturb-128.fits.gz", false);
-//  hermes::computeSynchroMap(128, 408, "!map-Synchro-408MHz-128.fits.gz");
-//  hermes::computeSynchroMap(128, 450, "!map-Synchro-450MHz-128.fits.gz");
-//    hermes::computeSynchroMap(128, 408, "!map-Synchro-noturb-408MHz-128.fits.gz", false);
-    hermes::computeSynchroMap(128, 412, "!map-Synchro-noturb-412MHz-128.fits.gz", false);
-//    hermes::computeSynchroMap(128, 450, "!map-Synchro-noturb-450MHz-128.fits.gz", false);
-    return 0;
+  hermes::computeDMmap(128, "!map-DM-128.fits.gz");
+  hermes::computeRMmap(128, true, "!map-RM-128.fits.gz");
+  hermes::computeRMmap(128, false, "!map-RM-noturb-128.fits.gz");
+  hermes::computeSynchroMap(128, 408, "!map-Synchro-408MHz-128.fits.gz");
+  hermes::computeSynchroMap(128, 450, "!map-Synchro-450MHz-128.fits.gz");
+  return 0;
 }

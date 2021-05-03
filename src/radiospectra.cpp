@@ -47,7 +47,7 @@ void computeSynchroSpectrumAbsorption(int nside, std::string filename) {
   // mfield->setUseTurbulent(false);
 
   // ionized gas
-  auto gas = std::make_shared<chargedgas::YMW16>();
+  auto gas = std::make_shared<ionizedgas::YMW16>();
 
   // cosmic ray density models
   std::vector<PID> particletypes = {Electron, Positron};
@@ -93,7 +93,7 @@ void computeSynchroSpectrumNoTurb(int nside, std::string filename) {
 
 void computeFreeFreeSpectrum(int nside, std::string filename) {
   // ionized gas
-  auto gas = std::make_shared<chargedgas::YMW16>();
+  auto gas = std::make_shared<ionizedgas::YMW16>();
 
   // integrator
   auto integrator = std::make_shared<FreeFreeIntegrator>(gas);
