@@ -273,5 +273,32 @@ def plot_flux_absorption_ratio(plot_title, plot_filename):
 #make_spectra('fits/spectrum-PionDecayAbsorption-H2-1TeV-1PeV-16.fits.gz', 'spectrum-PionDecayAbsorption-H2-1TeV-1PeV-16.txt')
 #make_spectra('fits/spectrum-PionDecay-H2-1TeV-1PeV-16.fits.gz', 'spectrum-PionDecay-H2-1TeV-1PeV-16.txt')
 
-plot_flux_absorption('Inner Galaxy', 'gamma_spectrum_abovetev_absorption')
-plot_flux_absorption_ratio('Inner Galaxy', 'gamma_ratio_abovetev_absorption')
+#plot_flux_absorption('Inner Galaxy', 'gamma_spectrum_abovetev_absorption')
+#plot_flux_absorption_ratio('Inner Galaxy', 'gamma_ratio_abovetev_absorption')
+
+#make_spectra('fitsfiles/spectrum-PionDecay-HI-1TeV-1PeV-64.fits.gz', 'spectrum-PionDecay-HI-1TeV-1PeV-64.txt')
+#make_spectra('fitsfiles/spectrum-PionDecayWa-HI-1TeV-1PeV-64.fits.gz', 'spectrum-PionDecayWa-H2-1TeV-1PeV-64.txt')
+
+fig, ax = plib.set_plot_style((4.5, 3.5))
+
+icol = 3
+
+E, flux_HI = read_flux_from_file('spectrum-PionDecay-HI-1TeV-1PeV-64.txt', icol)
+E2 = np.power(E, 2.5)
+ax.plot(E, E2 * (flux_HI), color='tab:blue', linestyle='-', label=r'Pion Decay')
+
+E, flux_HI = read_flux_from_file('spectrum-PionDecayWa-H2-1TeV-1PeV-64.txt', icol)
+E2 = np.power(E, 2.5)
+ax.plot(E, E2 * (flux_HI), color='tab:blue', linestyle='--', label=r'Pion Decay (with absorption)')
+
+ax.set_xscale('log')
+ax.set_xlabel(r'E [GeV]', fontsize=12)
+ax.set_xlim([1e3, 1e6])
+
+ax.set_yscale('log')
+ax.set_ylabel(r'E$^{2.5}$ Flux [GeV m$^{-2}$ s$^{-1}$ sr$^{-1}$]', fontsize=12)
+ax.set_ylim([1e-3, 1e-1])
+
+ax.legend(fontsize=7)
+plib.savefig(plt, 'test_absorption')
+

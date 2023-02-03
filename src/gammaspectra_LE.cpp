@@ -29,7 +29,7 @@ void computePionDecaySpectrum(int nside, neutralgas::GasType gasType, std::strin
   // integrator
   auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, kamae_crosssection);
   auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-  intPion->setSunPosition(sun_pos);
+  intPion->setObsPosition(sun_pos);
   intPion->setupCacheTable(100, 100, 50);
 
   // skymap
@@ -56,7 +56,7 @@ void computeInverseComptonSpectrum(int nside, std::string filename) {
   // integrator
   auto intIC = std::make_shared<InverseComptonIntegrator>(dragonModel, isrf, kleinnishina);
   auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-  intIC->setSunPosition(sun_pos);
+  intIC->setObsPosition(sun_pos);
   intIC->setupCacheTable(50, 50, 30);
 
   // skymap
@@ -84,7 +84,7 @@ void computeBremsstrahlungSpectrum(int nside, neutralgas::GasType gasType, std::
   // integrator
   auto intBremss = std::make_shared<BremsstrahlungIntegrator>(dragonModel, gas, crosssection);
   auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-  intBremss->setSunPosition(sun_pos);
+  intBremss->setObsPosition(sun_pos);
   intBremss->setupCacheTable(100, 100, 50);
 
   // skymap

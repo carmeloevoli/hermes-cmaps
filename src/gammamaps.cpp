@@ -24,7 +24,34 @@ void computePionDecayMap(int nside, double E_gamma, neutralgas::GasType gasType,
   // integrator
   auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, kamae_crosssection);
   auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-  intPion->setSunPosition(sun_pos);
+  intPion->setObsPosition(sun_pos);
+  intPion->setupCacheTable(200, 200, 100);
+
+  // skymap
+  auto skymaps = std::make_shared<GammaSkymap>(nside, E_gamma * 1_GeV);
+  skymaps->setIntegrator(intPion);
+
+  auto output = std::make_shared<outputs::HEALPixFormat>(filename);
+
+  skymaps->compute();
+  skymaps->save(output);
+}
+
+void computePionDecayMapWithAbsorption(int nside, double E_gamma, neutralgas::GasType gasType, std::string filename) {
+  // cosmic ray density models
+  std::vector<PID> particletypes = {Proton, Helium};
+  auto dragonModel = std::make_shared<cosmicrays::Dragon2D>(dragonFile, particletypes);
+
+  // interaction
+  auto kamae_crosssection = std::make_shared<interactions::Kamae06Gamma>();
+
+  // target gas
+  auto gas = std::make_shared<neutralgas::RingModel>(gasType);
+
+  // integrator
+  auto intPion = std::make_shared<PiZeroAbsorptionIntegrator>(dragonModel, gas, kamae_crosssection);
+  auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
+  intPion->setObsPosition(sun_pos);
   intPion->setupCacheTable(200, 200, 100);
 
   // skymap
@@ -53,7 +80,7 @@ void computePionDecayRingMap(int iring, int nside, double E_gamma, neutralgas::G
   // integrator
   auto intPion = std::make_shared<PiZeroIntegrator>(dragonModel, gas, kamae_crosssection);
   auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-  intPion->setSunPosition(sun_pos);
+  intPion->setObsPosition(sun_pos);
   intPion->setupCacheTable(200, 200, 100);
 
   // skymap
@@ -80,7 +107,7 @@ void computeInverseComptonMap(int nside, double E_gamma, std::string filename) {
   // integrator
   auto intIC = std::make_shared<InverseComptonIntegrator>(dragonModel, isrf, kleinnishina);
   auto sun_pos = Vector3QLength(8.5_kpc, 0_kpc, 0_kpc);
-  intIC->setSunPosition(sun_pos);
+  intIC->setObsPosition(sun_pos);
   intIC->setupCacheTable(100, 100, 50);
 
   // skymap
@@ -98,14 +125,17 @@ void computeInverseComptonMap(int nside, double E_gamma, std::string filename) {
 using GasType = hermes::neutralgas::GasType;
 
 int main(void) {
-  //hermes::computePionDecayMap(256, 10, GasType::HI, "!map-Pi0-HI-10GeV-256.fits.gz");
-  //hermes::computePionDecayMap(256, 10, GasType::H2, "!map-Pi0-H2-10GeV-256.fits.gz");
-  //hermes::computeInverseComptonMap(128, 10, "!map-IC-10GeV-128.fits.gz");
+  //hermes::computePionDecayMapWithAbsorption(128, 1e5, GasType::HI, "!map-Pi0a-HI-1PeV-256.fits.gz");
+  //hermes::computePionDecayMap(128, 1e3, GasType::HI, "!map-Pi0-HI-1PeV-256.fits.gz");
+    
+  hermes::computePionDecayMap(256, 10, GasType::HI, "!map-Pi0-HI-10GeV-256.fits.gz");
+  hermes::computePionDecayMap(256, 10, GasType::H2, "!map-Pi0-H2-10GeV-256.fits.gz");
+  hermes::computeInverseComptonMap(256, 10, "!map-IC-10GeV-256.fits.gz");
   
-  for (int i = 0; i < 11; i++) {
-     hermes::computePionDecayRingMap(i, 256, 5, GasType::H2, "!map-ring-Pi0-H2-5GeV-256-" + std::to_string(i) + ".fits.gz");
-     hermes::computePionDecayRingMap(i, 256, 5, GasType::HI, "!map-ring-Pi0-HI-5GeV-256-" + std::to_string(i) + ".fits.gz");
-  }
+  //for (int i = 0; i < 11; i++) {
+  //   hermes::computePionDecayRingMap(i, 256, 5, GasType::H2, "!map-ring-Pi0-H2-5GeV-256-" + std::to_string(i) + ".fits.gz");
+  //   hermes::computePionDecayRingMap(i, 256, 5, GasType::HI, "!map-ring-Pi0-HI-5GeV-256-" + std::to_string(i) + ".fits.gz");
+  //}
     
   return 0;
 }

@@ -83,6 +83,49 @@ def plot_map(fits_map_filename, output_filename, title, min_map, max_map):
     ax.set_ylabel(r'b [deg]')
     plib.savefig(plt, output_filename)
 
+def plot_map_mollview(fits_map_filename, output_filename, title, min_map, max_map):
+    fig, ax = plib.set_plot_style((4.5, 4))
+    nside, E_gamma = get_header_info(fits_map_filename)
+    map = get_map(fits_map_filename)
+    map = np.log10(E_gamma * E_gamma * map)
+    image = hp.mollview(map, title=title, norm="lin", max=max_map, min=min_map, cmap='jet', cbar=False)
+#                unit="mK",
+#                norm="hist",
+#                min=min_map,
+#                max=max_map)
+    hp.graticule()
+    fig = plt.gcf()
+    ax = plt.gca()
+    image = ax.get_images()[0]
+    cb = fig.colorbar(image, orientation='horizontal', pad=0.1, shrink=0.5, ax=ax)
+    cb.ax.set_xlabel(r'log E$^2$ Flux [GeV cm$^{-2}$ sr$^{-1}$ s$^{-1}$]', fontsize=10)
+    cb.ax.labelpad = 2
+    cb.ax.tick_params('both', length=0, width=1., which='major', pad=4, bottom=True, top=True, left=True, right=True)
+    cb.outline.set_linewidth(0.8)
+
+    plt.savefig(output_filename + '.png')
+
+#    b = np.linspace(-80., +80., 160 * 2)
+#    l = np.linspace(-150., +150., 300 * 2)
+#
+#    map_2d = convert_map_2D(map, nside, E_gamma, b, l)
+#
+#    image = ax.pcolor(l, b, map_2d,
+#                      cmap='jet',
+#                      vmin=min_map,
+#                      vmax=max_map,
+#                      shading='auto',
+#                      edgecolors='face')
+#
+#
+#    ax.invert_xaxis()
+#
+#    ax.set_title(title, pad=5, fontsize=11)
+#    #ax.grid(True)
+#    ax.set_xlabel(r'l [deg]')
+#    ax.set_ylabel(r'b [deg]')
+#    plib.savefig(plt, output_filename)
+
 def plot_ring(fits_map_filename, output_filename, title, cmap):
     fig, ax = plib.set_plot_style((4.5, 4))
     nside, E_gamma = get_header_info(fits_map_filename)
@@ -118,11 +161,14 @@ def plot_ring(fits_map_filename, output_filename, title, cmap):
     #plt.savefig(output_filename + ".png")
 
 # MAIN
-#plot_map('fitsfiles/map-Pi0-HI-10GeV-256.fits.gz ', 'PionDecay-HI-10GeV-cartesian-256', r'Pion Decay HI - E$_\gamma$ = 10 GeV', -4., -1.)
-#plot_map('fitsfiles/map-Pi0-H2-10GeV-256.fits.gz', 'PionDecay-H2-10GeV-cartesian-256', r'Pion Decay H2 - E$_\gamma$ = 10 GeV', -3., -0.5)
+plot_map_mollview('fitsfiles/map-Pi0-HI-10GeV-256.fits.gz', 'PionDecay-HI-10GeV-cartesian-256', r'Pion Decay - E$_\gamma$ = 10 GeV', -4., -1.)
+#plot_map_mollview('fitsfiles/map-Pi0-H2-10GeV-256.fits.gz', 'PionDecay-H2-10GeV-cartesian-256', r'Pion Decay H2 - E$_\gamma$ = 10 GeV', -2.5, -0.5)
+plot_map_mollview('fitsfiles/map-IC-10GeV-256.fits.gz', 'IC-10GeV-cartesian-256', r'Inverse Compton - E$_\gamma$ = 10 GeV', -4., -1.)
 
-for i in range(0,11):
+#plot_map('fitsfiles/map-Pi0a-HI-1PeV-256.fits.gz', 'PionDecayWithAbsorption-HI-1PeV-cartesian-128', r'Pion HI wa - E$_\gamma$ = 1 PeV', -4., -1.)
+
+#for i in range(0,11):
 #    plot_ring('fitsfiles/map-ring-Pi0-HI-5GeV-256-' + str(i) + '.fits.gz', 'PionDecay-HI-5GeV-256-' + str(i), r'Pion Decay HI - E$_\gamma$ = 5 GeV', 'OrRd')
-    plot_ring('fitsfiles/map-ring-Pi0-H2-5GeV-256-' + str(i) + '.fits.gz', 'PionDecay-H2-5GeV-256-' + str(i), r'Pion Decay H2 - E$_\gamma$ = 5 GeV', 'PuBuGn')
+#    plot_ring('fitsfiles/map-ring-Pi0-H2-5GeV-256-' + str(i) + '.fits.gz', 'PionDecay-H2-5GeV-256-' + str(i), r'Pion Decay H2 - E$_\gamma$ = 5 GeV', 'PuBuGn')
 
 #plot_map('output/map-IC-10GeV-128.fits.gz', 'IC-10GeV-cartesian-128', r'Inverse Compton - E$_\gamma$ = 10 GeV')
