@@ -287,9 +287,9 @@ E, flux_HI = read_flux_from_file('spectrum-PionDecay-HI-1TeV-1PeV-64.txt', icol)
 E2 = np.power(E, 2.5)
 ax.plot(E, E2 * (flux_HI), color='tab:blue', linestyle='-', label=r'Pion Decay')
 
-E, flux_HI = read_flux_from_file('spectrum-PionDecayWa-H2-1TeV-1PeV-64.txt', icol)
-E2 = np.power(E, 2.5)
-ax.plot(E, E2 * (flux_HI), color='tab:blue', linestyle='--', label=r'Pion Decay (with absorption)')
+#E, flux_HI = read_flux_from_file('spectrum-PionDecayWa-H2-1TeV-1PeV-64.txt', icol)
+#E2 = np.power(E, 2.5)
+#ax.plot(E, E2 * (flux_HI), color='tab:blue', linestyle='--', label=r'Pion Decay (with absorption)')
 
 ax.set_xscale('log')
 ax.set_xlabel(r'E [GeV]', fontsize=12)

@@ -1,12 +1,12 @@
 cmake_minimum_required (VERSION 3.1)
 project(hermes C CXX)
 
-set( CMAKE_VERBOSE_MAKEFILE on )
+set( CMAKE_VERBOSE_MAKEFILE off)
 set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" )
-set( CMAKE_C_COMPILER "/usr/local/bin/gcc-12" )
+set( CMAKE_C_COMPILER "gcc" )
 set( CMAKE_C_FLAGS "-O3" )
-set( CMAKE_CXX_COMPILER "/usr/local/bin/g++-12" )
-set( CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++11 -fopenmp -DOPENMP -DTHREADS=16" )
+set( CMAKE_CXX_COMPILER "g++" )
+set( CMAKE_CXX_FLAGS "-O3 -ftree-vectorize -std=c++14 -DTHREADS=16" )
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_BUILD_TYPE Debug)
@@ -93,6 +93,8 @@ find_package(HERMES)
 if(HERMES_FOUND)
     list(APPEND HERMES_EXTRA_INCLUDES ${HERMES_INCLUDE_DIR})
     list(APPEND HERMES_EXTRA_LIBRARIES ${HERMES_LIBRARIES})
+else() 
+    message(FATAL_ERROR "HERMES not found.")	
 endif(HERMES_FOUND)
 
 # copy data files in build
@@ -110,11 +112,11 @@ include_directories(include ${HERMES_EXTRA_INCLUDES})
 #add_executable(radiospectra src/radiospectra.cpp)
 #target_link_libraries(radiospectra ${HERMES_EXTRA_LIBRARIES})
 
-add_executable(gammamaps src/gammamaps.cpp)
-target_link_libraries(gammamaps ${HERMES_EXTRA_LIBRARIES})
+#add_executable(gammamaps src/gammamaps.cpp)
+#target_link_libraries(gammamaps ${HERMES_EXTRA_LIBRARIES})
 
-add_executable(gammaspectra-LE src/gammaspectra_LE.cpp)
-target_link_libraries(gammaspectra-LE ${HERMES_EXTRA_LIBRARIES})
+#add_executable(gammaspectra-LE src/gammaspectra_LE.cpp)
+#target_link_libraries(gammaspectra-LE ${HERMES_EXTRA_LIBRARIES})
 
 add_executable(gammaspectra-HE src/gammaspectra_HE.cpp)
 target_link_libraries(gammaspectra-HE ${HERMES_EXTRA_LIBRARIES})
