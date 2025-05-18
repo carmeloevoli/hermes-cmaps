@@ -1,2 +1,8 @@
-.DS_Store
-build
+*.DS_Store
+*__pycache__/
+*build
+*figures
+*fitsfiles
+*.txt
+*.png
+*.fits.gz
